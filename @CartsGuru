@@ -1,0 +1,54 @@
+/*
+Objective
+
+A trending topic is a Twitter hashtag that appears with a high frequency within a certain period of time. In this challenge, we will consider that a hashtag needs to appear at least 40 times in a 60 minutes period to be considered as a trending topic.
+
+In this challenge, you need to determine if there is a trending topic in a hashtag flow. Hashtag in the flow are separated by one minute, so there are 60 tags in a 60 minutes flow.
+
+Data format
+
+Input
+Row 1: an integer N comprised between 1 and 1000 corresponding to the number of hashtags in the flow.
+Rows 2 to N+1: a Twitter hashtag. A hashtag contains only non-accentuated lowercase characters and starts with the # symbol.
+
+Output
+A string (starting with the # symbol) corresponding to the first (chronologically) trending topic, if any, otherwise the string No trending topic
+
+e.g: 
+sample01.txt  => #travel
+sample02.txt  => No trending topic 
+
+ */
+function solution(rows) {
+  var dict = {};
+  //handling the list
+  for (i = 1; i < rows.length; i++) {
+    tag = rows[i];
+    if (!(tag in dict)){
+      dict[tag] = 1;
+    }else{
+      dict[tag] += 1;
+    }
+    // ignore the previous topics 
+    if (i > 60){
+     var preTag = rows[i-60];
+     dict[preTag] -= 1;
+     if (dict[preTag] == 0){
+       delete dict[preTag];
+     }
+    }
+
+    // check if there is a trending topic
+    for (var key in dict) {
+      if (dict[key] >= 40){
+         return key
+      }
+    }
+
+  }
+
+ return null // of course it's not correct...
+}
+const file = './test0.txt'
+const input = require('fs').readFileSync(require('path').resolve(file), "utf-8")
+console.log(solution(input.split('\n')))
